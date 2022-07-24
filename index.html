@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fate Online Character Sheet</title>
+  <link rel="stylesheet" href="./style/style.css">
+  <script src="./script/main.js" defer></script>
+  <!-- TODO: Add a stylesheet for printing -->
+</head>
+<body>
+  <h1>Welcome To The Fate Online Character Sheet</h1>
+
+  <main>
+    <!-- description section: name, pronouns, desc, refresh -->
+   <section class="desc">
+      <h2>General Info <button type="button" data-edit="desc">✏️</button></h2>
+      <div>
+        <img id="charImg">
+        <dl data-char="charName">
+          <dt>Name</dt>
+          <dd>{Insert character name here}</dd>
+        </dl>
+        <dl  data-char="charPronouns">
+          <dt>Pronouns</dt>
+          <dd>{Insert character pronouns here}</dd>
+        </dl>
+        <dl data-char="charDescription">
+          <dt>Description</dt>
+          <dd>{Insert character description here}</dd>
+        </dl>
+        <dl data-char="charRefresh">
+          <dt>Refresh</dt>
+          <dd>{Insert character refresh here}</dd>
+        </dl>
+      </div>
+      <dialog data-popup="desc">
+        <form class="flex-col">
+          <label for="charName">Name: </label><input name="charName" type="text" id="charName">
+          <label for="charPronouns">Pronouns: </label><input name="charPronouns" type="text" id="charPronouns">
+          <label for="charDescription">Description: </label><textarea rows="4" name="charDescription" id="charDescription"></textarea>
+          <label for="charRefresh">Refresh: </label><input name="charRefresh" type="number" id="charRefresh"min="1" value="3">
+          <input type="hidden" name="element" value="desc">
+          <div>
+            <button data-save="desc" type="button">Save</button>
+            <button data-cancel="desc" type="button">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+    </section>
+
+    <!-- aspect -->
+    <section class="aspects">
+      <h2>Aspects <button type="button" data-edit="aspects">✏️</button></h2>
+      <div>
+        <dl data-char="highConceptAspect">
+          <dt>High Concept</dt>
+          <dd>{Insert aspect here}</dd>
+        </dl>
+        <dl data-char="troubleAspect">
+          <dt>Trouble</dt>
+          <dd>{Insert aspect here}</dd>
+        </dl>
+        <dl data-char="relationshipAspect">
+          <dt>Relationship</dt>
+          <dd>{Insert aspect here}</dd>
+        </dl>
+        <dl data-char="otherApect1">
+          <dt>Other Aspect</dt>
+          <dd>{Insert aspect here}</dd>
+        </dl>
+        <dl data-char="otherApect2">
+          <dt>Other Aspect</dt>
+          <dd>{Insert aspect here}</dd>
+        </dl>
+      </div>
+      <dialog data-popup="aspects">
+        <form class="flex-col">
+          <label for="highConceptAspect">High Concept: </label><input name="highConceptAspect" type="text" id="highConceptAspect">
+          <label for="troubleAspect">Trouble: </label><input name="troubleAspect" type="text" id="troubleAspect">
+          <label for="relationshipAspect">Relationship: </label><input name="relationshipAspect" type="text" id="relationshipAspect">
+          <label for="otherApect1">Other Aspect: </label><input name="otherApect1" type="text" id="otherApect1">
+          <label for="otherApect2">Other Aspect: </label><input name="otherApect2" type="text" id="otherApect2">
+          <input type="hidden" name="element" value="aspects">
+          <div>
+            <button data-save="aspects" type="button">Save</button>
+            <button data-cancel="aspects" type="button">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+    </section>
+
+    <!-- skills -->
+    <section class="skills">
+      <h2>Skills <button type="button" data-edit="skills">✏️</button></h2>
+      <div>
+        <ul>
+          <li>Academics {Insert skill bonus here}</li>
+          <li>Athletics {Insert skill bonus here}</li>
+          <li>Burglary {Insert skill bonus here}</li>
+          <li>Contacts {Insert skill bonus here}</li>
+          <li>Crafts {Insert skill bonus here}</li>
+          <li>Deceive {Insert skill bonus here}</li>
+          <li>Drive {Insert skill bonus here}</li>
+          <li>Empathy {Insert skill bonus here}</li>
+          <li>Fight {Insert skill bonus here}</li>
+          <li>Investigate {Insert skill bonus here}</li>
+          <li>Lore {Insert skill bonus here}</li>
+          <li>Notice {Insert skill bonus here}</li>
+          <li>Physique {Insert skill bonus here}</li>
+          <li>Provoke {Insert skill bonus here}</li>
+          <li>Rapport {Insert skill bonus here}</li>
+          <li>Resources {Insert skill bonus here}</li>
+          <li>Shoot {Insert skill bonus here}</li>
+          <li>Stealth {Insert skill bonus here}</li>
+          <li>Will {Insert skill bonus here}</li>
+        </ul>
+      </div>
+      <dialog data-popup="skills">
+        <form class="flex-col">
+          <label for="skillSelect">Choose Skills/Approaches List: </label>
+          <select name="skillSelect" id="skillSelect">
+            <option value="" selected disabled>——Choose an option——</option>
+            <option value="skills">Fate Condensed Skills</option>
+            <option value="approaches">Fate Accelerated Approaches</option>
+          </select>
+
+          <div data-list="skills" class="grid two-by-two-grid">
+
+          </div>
+          <div>
+            <button data-save="skills" type="button">Save</button>
+            <button data-cancel="skills" type="button">Cancel</button>
+          </div>
+          <input type="hidden" name="element" value="skills">
+        </form>
+      </dialog>
+    </section>
+
+    <!-- stunts -->
+    <section class="stunts">
+      <h2>Stunts <button type="button" data-edit="stunts">✏️</button></h2>
+      <div>
+        <dl>
+          <dt>Stunt 1</dt>
+          <dd>{Because I [describe how you are amazing or have a cool bit of gear], I get a +2 when I use [pick a skill] to [pick one: overcome, create an advantage, attack, defend] when [describe a circumstance].}</dd>
+        </dl>
+        <dl>
+          <dt>Stunt 2</dt>
+          <dd>{Because I [describe how you are amazing or have a cool bit of gear], I can [describe your amazing feat], but only [describe a circumstance or limitation].}</dd>
+        </dl>
+      </div>
+      <dialog data-popup="stunts" class="measure">
+        <form class="flex-col">
+          <fieldset class="flex-col">
+            <legend>Stunt Info</legend>
+            <label for="name0">Stunt Name</label>
+            <input type="text" name="name0" id="name0">
+            <label for="desc0">Stunt Description</label>
+            <textarea rows="8" name="desc0" id="desc0"></textarea>
+            <button type="button" data-remove="stunt">Remove Stunt</button>
+          </fieldset>
+          <div>
+            <button data-add="stunt" type="button">Add Stunt</button>
+            <button data-save="stunts" type="button">Save</button>
+            <button data-cancel="stunts" type="button">Cancel</button>
+          </div>
+          <input type="hidden" name="element" value="stunts">
+        </form>
+      </dialog>
+    </section>
+
+    <!-- vitals -->
+    <section class="vitals">
+      <h2>Vitals <button type="button" data-edit="vitals">✏️</button></h2>
+      <h3>Stress</h3>
+      <div class="stress measure" data-mod="stress">
+        <div><strong>Physical:</strong><span><button type="button">1</button><button type="button">1</button><button type="button">1</button><button type="button">1</button><button type="button">1</button><button type="button">1</button></span></div>
+        <div><strong>Mental:</strong><span><button type="button">1</button><button type="button">1</button><button type="button">1</button></span></div>
+      </div>
+      <h3>Consequences</h3>
+      <div data-mod="consequences">
+        <dl>
+          <dt>Mild (-2)</dt>
+          <dd>{Insert consequence description here}</dd>
+        </dl>
+        <dl>
+          <dt>Moderate (-4)</dt>
+          <dd>{Insert consequence description here}</dd>
+        </dl>
+        <dl>
+          <dt>Severe (-6)</dt>
+          <dd>{Insert consequence description here}</dd>
+        </dl>
+      </div>
+      <dialog data-popup="vitals" class="measure">
+        <form class="flex-col">
+          <div data-list="stress" class="grid two-by-two-grid">
+            <span><label for="physicalStress">Physical Stress Boxes </label><output for="physicalStress">(3)</output></span><input type="range" id="physicalStress" min="1" max="8" name="PhysicalStress" step="1" value="3">
+            <span><label for="mentalStress">Mental Stress Boxes </label><output for="mentalStress">(3)</output></span><input type="range" id="mentalStress" min="1" max="8" name="MentalStress" step="1" value="3">
+          </div>
+          <div class="flex-col">
+            <label for="mildConsequence">Mild Consequence: </label>
+            <input name="MildConsequence" type="text" id="mildConsequence">
+            <label for="moderateConsequence">Moderate Consequence: </label>
+            <input name="ModerateConsequence" type="text" id="moderateConsequence">
+            <label for="severeConsequence">Severe Consequence: </label>
+            <input name="SevereConsequence" type="text" id="severeConsequence">
+          </div>
+          <div>
+            <!-- <button data-add="vitals" type="button">Add Stress Track</button> -->
+            <button data-save="vitals" type="button">Save</button>
+            <button data-cancel="vitals" type="button">Cancel</button>
+          </div>
+          <input type="hidden" name="element" value="vitals">
+        </form>
+      </dialog>
+    </section>
+  </main>
+</body>
+</html>
