@@ -136,6 +136,11 @@ form > div + div {
   margin-block-start: 1em;
 }
 
+.flex-row-align {
+  display: flex;
+  align-items: center;
+}
+
 
 
 /****

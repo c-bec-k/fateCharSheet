@@ -7,18 +7,11 @@ const pipe = (...fns) => (...init) => fns.slice(1).reduce( (val, fn) => fn(val),
 const arrayFrom = (val) => Array.from(val);
 const toObject = (val) => Object.fromEntries(val);
 const when = (test, fn) => (val) =>  test(val) ? fn(val) : () => {};
-
 const $ = (el) => document.querySelector(el);
 const $$ = (el) => document.querySelectorAll(el);
 const $on = (ev, fn, el) => document.querySelector(el).addEventListener(ev, fn);
 const $onClick = (fn, el) => document.querySelector(el).addEventListener('click', fn);
-
 const formatNumber = (num, el) => Number(num).toLocaleString(undefined,{signDisplay: el === "vitals" ? "never" : "always"});
-
-const setImageHeight = (parent, img) => {
-  const height = $(parent).clientHeight;
-  $(img).style.maxHeight = `${height}px`;
-}
 
 const createElement = (el, attributes = {}, str ="") => {
   const retEl = document.createElement(el);
@@ -40,7 +33,7 @@ const approachesList = ["Careful", "Clever", "Flashy", "Forceful", "Quick", "Sne
 const state = {
   desc: {},
   aspects: {},
-  skills: [],
+  skills: {},
   stunts: {},
   consequenes: {},
   image: "url goes here"
@@ -59,50 +52,7 @@ const toggleDialog = (ev) => {
 
 const getClosestForm = (ev) => ev.target.closest('form');
 const convertToFormData = (form) => new FormData(form);
-const removeSelect = (fd) => (fd.delete("skillSelect"), fd);
-const formatSkills = (arr) => arr.map( ([key, val]) => [key.slice(3), val]);
 const closeDialog = (el) => $(`[data-popup="${el}"]`).close();
-const outputSkillsToDOM = (arr) => {
-  $('.skills ul').textContent = '';
-  arr.forEach( ([skill, bonus])=> {
-    const el = createElement('li', [], `${skill} (${formatNumber(bonus)})`);
-    $('.skills ul').append(el);
-  });
-  return "skills";
-};
-
-const saveCharList = pipe(
-  getClosestForm,
-  convertToFormData,
-  removeSelect,
-  arrayFrom,
-  formatSkills,
-  outputSkillsToDOM,
-  closeDialog
-);
-
-const populateSkills = (ev) => {
-  const parentEl = $('[data-list="skills"]');
-  parentEl.textContent = "";
-  const listToUse = ev.target.value === "skills" ? skillsList : approachesList;
-  listToUse.forEach( (skill)=> {
-    const wrapper = createElement("span");
-    const el = createElement("label", {for: `set${skill}`}, `${skill} `);
-    const outputEl = createElement("output", {for:`set${skill}`}, "(+0):")
-    const inputEl = createElement('input', {
-      type: "range",
-      id:`set${skill}`,
-      min: "0",
-      max: "8",
-      name: `set${skill}`,
-      step: "1",
-      value: "0"
-    });
-    wrapper.append(el,outputEl)
-    parentEl.append(wrapper, inputEl);
-  });
-};
-
 const isRangeSlider = (ev) => ev.target.type === "range";
 const updateSkillNumber = (ev) => {
   const el = ev.target.closest('form').querySelector('[name="element"]').value;
@@ -118,12 +68,94 @@ const outputObjToDOM = (obj) => {
   return obj.element;
 }
 
+const saveObjToState = (obj) => {
+  const copy = Object.assign({}, obj);
+  delete copy.element;
+  state[obj.element] = copy;
+  console.log(state);
+  return obj;
+}
+
 const saveCharObject = pipe(
   getClosestForm,
   convertToFormData,
   toObject,
   outputObjToDOM,
   closeDialog
+);
+
+
+/*****
+  Skills
+*****/
+
+const removeSelect = (fd) => (fd.delete("skillSelect"), fd);
+const removeSkillInput = (fd) => (fd.delete("add-skill"), fd);
+const formatSkills = (arr) => arr.map( ([key, val]) => [key.slice(3), val]);
+
+const createSkillObj = (ev) => {
+  const listToUse = ev.target.value === "skills" ? skillsList : approachesList;
+  return listToUse.reduce( (acc, cur) => ({...acc, [cur]: 0}), {});
+};
+
+const addSkillsToSkillList = (obj) =>{
+  const parentEl = $('[data-list="skills"]');
+  parentEl.textContent = '';
+  Object.keys(obj).sort().forEach( (skill) => {
+    const wrapper = createElement("span");
+    const label = createElement("label", {for: `${skill}`}, `${skill} `);
+    const outputEl = createElement("output", {for:`${skill}`}, "(+0):");
+    const wrapper2 = createElement("span", {class: 'flex-row-align'});
+    const inputEl = createElement('input', {
+      type: "range",
+      id:`${skill}`,
+      min: "0",
+      max: "8",
+      name: `${skill}`,
+      step: "1",
+      value: "0"
+    });
+    const delBtn = createElement('button',{type:'button', 'data-delskill': `${skill}`}, 'Delete skill')
+    wrapper2.append(inputEl, delBtn)
+    wrapper.append(label,outputEl)
+    parentEl.append(wrapper, wrapper2);
+  });
+};
+
+const getSkillToDelete = (ev) => ev.target.dataset.delskill;
+const deleteSkill = (skill) => {
+  $(`[for=${skill}]`).closest('span').remove();
+  $(`input[name=${skill}]`).closest('span').remove();
+};
+
+const outputSkillsToDOM = (obj) => {
+  $('.skills ul').textContent = '';
+  Object.keys(obj).filter(k => k !== "element").forEach( (key) => {
+    const el = createElement('li', {}, `${key} (${formatNumber(obj[key])})`);
+    $('.skills ul').append(el);
+  });
+  return obj.element;
+};
+
+const saveCharList = pipe(
+  getClosestForm,
+  convertToFormData,
+  removeSelect,
+  removeSkillInput,
+  toObject,
+  saveObjToState,
+  outputSkillsToDOM,
+  closeDialog
+);
+
+const populateSkills = pipe(
+  createSkillObj,
+  addSkillsToSkillList
+);
+
+const removeSkill = pipe(
+  getSkillToDelete,
+  deleteSkill
 );
 
 
@@ -177,6 +209,7 @@ const saveStuntObject = pipe(
   convertToFormData,
   toObject,
   collateStunts,
+  saveObjToState,
   outputStuntsToDOM,
   closeDialog
 );
@@ -229,6 +262,7 @@ const saveVitalsObject = pipe(
   getClosestForm,
   convertToFormData,
   toObject,
+  saveObjToState,
   populateStressBoxes,
   fillConsequences,
   closeDialog
@@ -241,7 +275,6 @@ const saveVitalsObject = pipe(
 
 (() => {
   const divHeight = $('.desc > div').offsetHeight;
-  console.log(divHeight);
   $('#charImg').style.maxHeight = `${divHeight}px`;
   $('#charImg').src = './img/ichigoKurosaki.jpg';
 })();
@@ -259,6 +292,7 @@ const dialogHandler = cond([
   [(ev) => ev.target.dataset.save === "stunts", (ev) => saveStuntObject(ev)],
   [(ev) => ev.target.dataset.save === "vitals", (ev) => saveVitalsObject(ev)],
   [(ev) => ev.target.dataset.cancel, (ev) => ev.target.closest('dialog').close()],
+  [(ev) => ev.target.dataset.delskill, (ev) => removeSkill(ev)],
   [() => true, () => {}]
  ]);
 
