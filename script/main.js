@@ -54,11 +54,6 @@ const getClosestForm = (ev) => ev.target.closest('form');
 const convertToFormData = (form) => new FormData(form);
 const closeDialog = (el) => $(`[data-popup="${el}"]`).close();
 const isRangeSlider = (ev) => ev.target.type === "range";
-const updateSkillNumber = (ev) => {
-  const el = ev.target.closest('form').querySelector('[name="element"]').value;
-  $(`output[for=${ev.target.id}]`).textContent = `(${formatNumber(ev.target.value, el)})`;
-};
-const updateSkill = when(isRangeSlider, updateSkillNumber)
 
 const objectFrom = (val) => Object.fromEntries(val);
 const outputObjToDOM = (obj) => {
@@ -92,6 +87,12 @@ const saveCharObject = pipe(
 const removeSelect = (fd) => (fd.delete("skillSelect"), fd);
 const removeSkillInput = (fd) => (fd.delete("add-skill"), fd);
 const formatSkills = (arr) => arr.map( ([key, val]) => [key.slice(3), val]);
+
+const updateSkillNumber = (ev) => {
+  const el = ev.target.closest('form').querySelector('[name="element"]').value;
+  $(`output[for=${ev.target.id}]`).textContent = `(${formatNumber(ev.target.value, el)})`;
+};
+const updateSkill = when(isRangeSlider, updateSkillNumber)
 
 const createSkillObj = (ev) => {
   const listToUse = ev.target.value === "skills" ? skillsList : approachesList;
