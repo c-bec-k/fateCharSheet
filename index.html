@@ -17,7 +17,7 @@
    <section class="desc">
       <h2>General Info <button type="button" data-edit="desc">✏️</button></h2>
       <div>
-        <img id="charImg">
+        <img data-char="charImg">
         <dl data-char="charName">
           <dt>Name</dt>
           <dd>{Insert character name here}</dd>
@@ -40,7 +40,9 @@
           <label for="charName">Name: </label><input name="charName" type="text" id="charName">
           <label for="charPronouns">Pronouns: </label><input name="charPronouns" type="text" id="charPronouns">
           <label for="charDescription">Description: </label><textarea rows="4" name="charDescription" id="charDescription"></textarea>
-          <label for="charRefresh">Refresh: </label><input name="charRefresh" type="number" id="charRefresh"min="1" value="3">
+          <label for="charRefresh">Refresh: </label><input name="charRefresh" type="number" id="charRefresh" min="1" value="3">
+          <label for="charImg">Image URL: </label><input name="charImg" type="text" id="charImg">
+
           <input type="hidden" name="element" value="desc">
           <div>
             <button data-save="desc" type="button">Save</button>

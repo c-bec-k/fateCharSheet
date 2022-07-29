@@ -7,18 +7,26 @@ const pipe = (...fns) => (...init) => fns.slice(1).reduce( (val, fn) => fn(val),
 const arrayFrom = (val) => Array.from(val);
 const toObject = (val) => Object.fromEntries(val);
 const when = (test, fn) => (val) =>  test(val) ? fn(val) : () => {};
+const ifElse = (test, ifFn, elseFn) => (val) =>  test(val) ? ifFn(val) : elseFn(val);
 const $ = (el) => document.querySelector(el);
 const $$ = (el) => document.querySelectorAll(el);
 const $on = (ev, fn, el) => document.querySelector(el).addEventListener(ev, fn);
 const $onClick = (fn, el) => document.querySelector(el).addEventListener('click', fn);
 const formatNumber = (num, el) => Number(num).toLocaleString(undefined,{signDisplay: el === "vitals" ? "never" : "always"});
+const isString = (val) => typeof(val) === 'string';
+const isObject = (val) => typeof(val) === 'object';
 
-const createElement = (el, attributes = {}, str ="") => {
+const createElement = (el, objOrStr, str) => {
+  let attributes = {};
+  let content = '';
+  when(isObject, () => attributes = objOrStr)(objOrStr);
+  when(isString, () => content = objOrStr)(objOrStr);
+  when(isString, () => content = str)(str);
   const retEl = document.createElement(el);
     Object.entries(attributes).forEach( ([key, val]) => {
       retEl.setAttribute(key,val);
     });
-  retEl.textContent = str;
+  retEl.textContent = content;
   return retEl;
 }
 
@@ -35,20 +43,13 @@ const state = {
   aspects: {},
   skills: {},
   stunts: {},
-  consequenes: {},
-  image: "url goes here"
+  vitals: {},
 }
 
 
 /*****
  Primary Functions
 *****/
-
-const toggleDialog = (ev) => {
-  if (ev.target.dataset.edit) {
-    $(`[data-popup=${ev.target.dataset.edit}]`).showModal();
-  }
-};
 
 const getClosestForm = (ev) => ev.target.closest('form');
 const convertToFormData = (form) => new FormData(form);
@@ -57,9 +58,13 @@ const isRangeSlider = (ev) => ev.target.type === "range";
 
 const objectFrom = (val) => Object.fromEntries(val);
 const outputObjToDOM = (obj) => {
-  Object.entries(obj).filter(([key,_]) => key !== "element").forEach( ([key,val])=> {
-    $(`[data-char="${key}"] > dd`).textContent = val;
-  });
+  const checkImg = (key) => key === "charImg";
+  const setImgSrc = (key) => $('[data-char="charImg"]').src = obj[key];
+  const outputText = (key) => $(`[data-char="${key}"] > dd`).textContent = obj[key];
+  Object.keys(obj).filter((key) => key !== "element").forEach(
+    ifElse(checkImg, setImgSrc, outputText)
+  );
+  $('[data-char="charImg"]').style.maxHeight = `${$('.desc > div').offsetHeight}px`;
   return obj.element;
 }
 
@@ -67,7 +72,6 @@ const saveObjToState = (obj) => {
   const copy = Object.assign({}, obj);
   delete copy.element;
   state[obj.element] = copy;
-  console.log(state);
   return obj;
 }
 
@@ -75,10 +79,21 @@ const saveCharObject = pipe(
   getClosestForm,
   convertToFormData,
   toObject,
+  saveObjToState,
   outputObjToDOM,
   closeDialog
 );
 
+
+/*****
+  Desc
+*****/
+
+const fillInDesDialog = (obj) => {
+  Object.keys(obj).forEach( (key) => {
+    $(`[name=${key}]`).value = obj[key];
+  });
+}
 
 /*****
   Skills
@@ -99,13 +114,13 @@ const createSkillObj = (ev) => {
   return listToUse.reduce( (acc, cur) => ({...acc, [cur]: 0}), {});
 };
 
-const addSkillsToSkillList = (obj) =>{
+const addSkillsToSkillList = (obj) => {
   const parentEl = $('[data-list="skills"]');
   parentEl.textContent = '';
   Object.keys(obj).sort().forEach( (skill) => {
     const wrapper = createElement("span");
     const label = createElement("label", {for: `${skill}`}, `${skill} `);
-    const outputEl = createElement("output", {for:`${skill}`}, "(+0):");
+    const outputEl = createElement("output", {for:`${skill}`}, `(+${obj[skill]}):`);
     const wrapper2 = createElement("span", {class: 'flex-row-align'});
     const inputEl = createElement('input', {
       type: "range",
@@ -114,7 +129,7 @@ const addSkillsToSkillList = (obj) =>{
       max: "8",
       name: `${skill}`,
       step: "1",
-      value: "0"
+      value: `${obj[skill]}`
     });
     const delBtn = createElement('button',{type:'button', 'data-delskill': `${skill}`}, 'Delete skill')
     wrapper2.append(inputEl, delBtn)
@@ -132,7 +147,7 @@ const deleteSkill = (skill) => {
 const outputSkillsToDOM = (obj) => {
   $('.skills ul').textContent = '';
   Object.keys(obj).filter(k => k !== "element").forEach( (key) => {
-    const el = createElement('li', {}, `${key} (${formatNumber(obj[key])})`);
+    const el = createElement('li', `${key} (${formatNumber(obj[key])})`);
     $('.skills ul').append(el);
   });
   return obj.element;
@@ -167,8 +182,8 @@ const removeSkill = pipe(
 const removeStunt = (ev) => ev.target.closest('fieldset').remove();
 const addStunt = (ev) => {
   const rand = Date.now().toString(16);
-  const fset = createElement('fieldset', {class: "flex-col"},'');
-  const leg = createElement('legend', {}, "Stunt Info");
+  const fset = createElement('fieldset', {class: "flex-col"});
+  const leg = createElement('legend', "Stunt Info");
   const nameLabel = createElement('label', {for: `name${rand}`},'Stunt Name');
   const nameText = createElement('input', {type: 'text', name: `name${rand}`, id: `name${rand}`})
   const descLabel = createElement('label', {for: `desc${rand}`},'Stunt Description');
@@ -196,8 +211,8 @@ const outputStuntsToDOM = (obj) => {
   Object.keys(obj).forEach( (key) => {
     if (key !== "element") {
       const dl = createElement('dl');
-      const dt = createElement('dt', {}, key);
-      const dd = createElement('dd', {}, obj[key]);  
+      const dt = createElement('dt', key);
+      const dd = createElement('dd', obj[key]);  
       dl.append(dt,dd);
       $('.stunts > div').append(dl);
     }
@@ -250,8 +265,8 @@ const fillConsequences = (obj) => {
     if (key.includes("Consequence")) {
       const dl = createElement('dl');
       const title = key.replace("Consequence", key.startsWith("Mild") ? " (-2)" : key.startsWith("Moderate") ? " (-4)" : " (-6)");
-      const dt = createElement('dt', {}, title);
-      const dd = createElement('dd', {}, obj[key]);  
+      const dt = createElement('dt', title);
+      const dd = createElement('dd', obj[key]);  
       dl.append(dt,dd);
       container.append(dl);
     }
@@ -274,11 +289,19 @@ const saveVitalsObject = pipe(
   Init
 *****/
 
-(() => {
-  const divHeight = $('.desc > div').offsetHeight;
-  $('#charImg').style.maxHeight = `${divHeight}px`;
-  $('#charImg').src = './img/ichigoKurosaki.jpg';
-})();
+  $('[data-char="charImg"]').style.maxHeight = `${$('.desc > div').offsetHeight}px`;
+
+
+  const toggleDialog = (ev) => {
+    const target = ev.target.dataset.edit;
+    if (!target) return;
+    const stateData = state[target];
+    when(()=> target === 'skill', addSkillsToSkillList(stateData));
+    when(()=> target === 'desc', fillInDesDialog(stateData));
+    $(`[data-popup=${target}]`).showModal();
+  };
+
+
 
 /*****
   Event Listeners & Handler

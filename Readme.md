@@ -6,9 +6,18 @@ Hello and welcome! This repo is my attempt to make an online Fate RPG character 
 
 When I remember, I'll add items that I want to get done.
 
-- [ ] Character image upload or URL
-- [ ] Add everything to global state after modification
-- [ ] Read from global state *first* and populate the edit screens accordingly
+- [X] Character ~~image upload or~~ URL
+- [ ] validate URL
+- [X] Add everything to global state after modification
+- [X] Read from global state *first* and populate the edit screens accordingly
 - [ ] Clean up code
 - [ ] More functions! Less imperative
-- [ ] Organize functions under better headers 
+- [X] Organize functions under better headers
+- [ ] Make state reactive to modify DOM
+- [ ] Landing/login page
+- [ ] Character list page(?)
+- [ ] Make the backend
+  - [ ] validation route
+  - [ ] charlist route
+  - [ ] logout route
+- [ ] Setup database
