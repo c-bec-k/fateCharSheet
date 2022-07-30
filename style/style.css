@@ -103,10 +103,20 @@ img {
 dialog {
   z-index: 5;
   background-color: #eee;
+  border-radius: 15px;
+  border: none;
+}
+
+dialog::backdrop {
+  background: rgba(0,0,0,.7);
 }
 
 select {
   margin-block-end: var(--15rem);
+}
+
+textarea {
+  font-family: inherit;
 }
 
 /****
@@ -161,10 +171,6 @@ form > label:nth-child(1n+2) {
 form {
   padding-inline: 5em;
   padding-block: 2em;
-}
-
-dialog::backdrop {
-  background: rgba(0,0,0,.7);
 }
 
 fieldset > input + label {

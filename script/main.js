@@ -16,6 +16,23 @@ const formatNumber = (num, el) => Number(num).toLocaleString(undefined,{signDisp
 const isString = (val) => typeof(val) === 'string';
 const isObject = (val) => typeof(val) === 'object';
 
+const updateState = (key) => (val) => {
+  obj = Object.assign({}, state[key], val);
+  return (state[key] = obj);
+};
+
+const setState = (key) => (val) => (state[key] = val);
+
+const deleteState = (key) => (val) => {
+  obj = Object.assign({}, state[key]);
+  delete obj[val];
+  return (state[key] = obj);
+};
+
+const updateSkillsState = updateState('skills');
+const deleteSkillsState = deleteState('skills');
+const setSkillsState = setState('skills');
+
 const createElement = (el, objOrStr, str) => {
   let attributes = {};
   let content = '';
@@ -96,6 +113,16 @@ const fillInDesDialog = (obj) => {
 }
 
 /*****
+  Aspects
+*****/
+
+const fillInAspectDialog = (obj) => {
+  Object.keys(obj).forEach( (key) => {
+    $(`[name=${key}]`).value = obj[key];
+  });
+}
+
+/*****
   Skills
 *****/
 
@@ -142,6 +169,7 @@ const getSkillToDelete = (ev) => ev.target.dataset.delskill;
 const deleteSkill = (skill) => {
   $(`[for=${skill}]`).closest('span').remove();
   $(`input[name=${skill}]`).closest('span').remove();
+  return skill;
 };
 
 const outputSkillsToDOM = (obj) => {
@@ -152,6 +180,8 @@ const outputSkillsToDOM = (obj) => {
   });
   return obj.element;
 };
+
+const skillToObj = () => ({ [$("#add-skill").value]: 0 });
 
 const saveCharList = pipe(
   getClosestForm,
@@ -174,10 +204,20 @@ const removeSkill = pipe(
   deleteSkill
 );
 
+const addNewSkill = pipe(
+  skillToObj,
+  updateSkillsState,
+  addSkillsToSkillList
+)
+
 
 /*****
   Stunts
 *****/
+
+const fillInStuntsDialog = (obj) => {
+
+};
 
 const removeStunt = (ev) => ev.target.closest('fieldset').remove();
 const addStunt = (ev) => {
@@ -298,6 +338,8 @@ const saveVitalsObject = pipe(
     const stateData = state[target];
     when(()=> target === 'skill', addSkillsToSkillList(stateData));
     when(()=> target === 'desc', fillInDesDialog(stateData));
+    when(()=> target === 'aspects', fillInAspectDialog(stateData));
+    when(()=> target === 'stunts', fillInStuntsDialog(stateData));
     $(`[data-popup=${target}]`).showModal();
   };
 
@@ -317,6 +359,7 @@ const dialogHandler = cond([
   [(ev) => ev.target.dataset.save === "vitals", (ev) => saveVitalsObject(ev)],
   [(ev) => ev.target.dataset.cancel, (ev) => ev.target.closest('dialog').close()],
   [(ev) => ev.target.dataset.delskill, (ev) => removeSkill(ev)],
+  [(ev) => ev.target.dataset.add === 'skill', (ev) => addNewSkill(ev)],
   [() => true, () => {}]
  ]);
 
