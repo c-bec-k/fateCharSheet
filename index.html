@@ -160,15 +160,10 @@
       </div>
       <dialog data-popup="stunts" class="measure">
         <form class="flex-col">
-          <fieldset class="flex-col">
-            <legend>Stunt Info</legend>
-            <label for="name0">Stunt Name</label>
-            <input type="text" name="name0" id="name0">
-            <label for="desc0">Stunt Description</label>
-            <textarea rows="8" name="desc0" id="desc0"></textarea>
-            <button type="button" data-remove="stunt">Remove Stunt</button>
-          </fieldset>
-          <div>
+          <div class="flex-col" data-append="stunt">
+
+          </div>
+          <div class="flex-even-space">
             <button data-add="stunt" type="button">Add Stunt</button>
             <button data-save="stunts" type="button">Save</button>
             <button data-cancel="stunts" type="button">Cancel</button>

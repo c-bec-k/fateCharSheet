@@ -15,6 +15,7 @@ const $onClick = (fn, el) => document.querySelector(el).addEventListener('click'
 const formatNumber = (num, el) => Number(num).toLocaleString(undefined,{signDisplay: el === "vitals" ? "never" : "always"});
 const isString = (val) => typeof(val) === 'string';
 const isObject = (val) => typeof(val) === 'object';
+const tee = (fn) => (val) =>  (fn(val), val);
 
 const updateState = (key) => (val) => {
   obj = Object.assign({}, state[key], val);
@@ -215,24 +216,33 @@ const addNewSkill = pipe(
   Stunts
 *****/
 
-const fillInStuntsDialog = (obj) => {
-
-};
 
 const removeStunt = (ev) => ev.target.closest('fieldset').remove();
+const clearStunts = tee( () => $('[data-append="stunt"]').textContent = '');
+
 const addStunt = (ev) => {
   const rand = Date.now().toString(16);
-  const fset = createElement('fieldset', {class: "flex-col"});
-  const leg = createElement('legend', "Stunt Info");
-  const nameLabel = createElement('label', {for: `name${rand}`},'Stunt Name');
-  const nameText = createElement('input', {type: 'text', name: `name${rand}`, id: `name${rand}`})
-  const descLabel = createElement('label', {for: `desc${rand}`},'Stunt Description');
-  const descText = createElement('textarea', {rows: '8', name: `desc${rand}`, id: `desc${rand}`})
-  descText.value = 'Because I [describe how you are amazing or have a cool bit of gear], I get a +2 when I use [pick a skill] to [pick one: overcome, create an advantage, attack, defend] when [describe a circumstance].\n\nBecause I [describe how you are amazing or have a cool bit of gear], I can [describe your amazing feat], but only [describe a circumstance or limitation].'
-  const delButton = createElement('button', {type: 'button', 'data-remove': 'stunt'}, 'Remove Stunt')
-  fset.append(leg, nameLabel, nameText, descLabel, descText, delButton);
-  ev.target.parentElement.before(fset);
+  const defaultText = 'Because I [describe how you are amazing or have a cool bit of gear], I get a +2 when I use [pick a skill] to [pick one: overcome, create an advantage, attack, defend] when [describe a circumstance].\n\nBecause I [describe how you are amazing or have a cool bit of gear], I can [describe your amazing feat], but only [describe a circumstance or limitation].'
+  appendStunts(addStuntFromState({[rand]: defaultText}));
+  $(`#name${rand}`).value = '';
 }
+
+const addStuntFromState = (obj) => {
+  return Object.keys(obj).sort().map( (key) => {
+    const fset = createElement('fieldset', {class: "flex-col"});
+    const leg = createElement('legend', "Stunt Info");
+    const nameLabel = createElement('label', {for: `name${key}`},'Stunt Name');
+    const nameText = createElement('input', {type: 'text', name: `name${key}`, id: `name${key}`, value: key})
+    const descLabel = createElement('label', {for: `desc${key}`},'Stunt Description');
+    const descText = createElement('textarea', {rows: '8', name: `desc${key}`, id: `desc${key}`}, obj[key])
+    const delButton = createElement('button', {type: 'button', 'data-remove': 'stunt'}, 'Remove Stunt')
+    fset.append(leg, nameLabel, nameText, descLabel, descText, delButton);
+    return fset;
+    // $('[data-append="stunt"]').append(fset);
+  });
+}
+
+const appendStunts = (arr) => arr.forEach ( (el) => $('[data-append="stunt"]').append(el));
 
 const collateStunts = (obj) => {
   const newObj = {};
@@ -248,7 +258,7 @@ const collateStunts = (obj) => {
 
 const outputStuntsToDOM = (obj) => {
   $('.stunts > div').textContent = '';
-  Object.keys(obj).forEach( (key) => {
+  Object.keys(obj).sort().forEach( (key) => {
     if (key !== "element") {
       const dl = createElement('dl');
       const dt = createElement('dt', key);
@@ -268,6 +278,12 @@ const saveStuntObject = pipe(
   saveObjToState,
   outputStuntsToDOM,
   closeDialog
+);
+
+const fillInStuntsDialog = pipe(
+  clearStunts,
+  addStuntFromState,
+  appendStunts
 );
 
 

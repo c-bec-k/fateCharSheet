@@ -12,7 +12,7 @@ When I remember, I'll add items that I want to get done.
   - [X] Description
   - [X] Aspects
   - [X] Skills
-  - [ ] Stunts
+  - [X] Stunts
   - [ ] Vitals
 - [X] Add skills to list
 - [ ] More functions! Less imperative
@@ -23,7 +23,7 @@ When I remember, I'll add items that I want to get done.
 - [ ] Clean up code
 - [ ] Make the backend
   - [ ] validation route
-  - [ ] charlist route
+  - [ ] character list route
   - [ ] logout route
 - [ ] Setup database
 - [ ] validate URL
