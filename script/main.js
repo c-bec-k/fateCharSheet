@@ -5,7 +5,7 @@
 const cond = (arr) => (data) => arr.find( ([fn, _]) => fn(data))[1](data);
 const pipe = (...fns) => (...init) => fns.slice(1).reduce( (val, fn) => fn(val), fns[0](...init));
 const arrayFrom = (val) => Array.from(val);
-const toObject = (val) => Object.fromEntries(val);
+const toObject = (iterable) => Object.fromEntries(iterable);
 const when = (test, fn) => (val) =>  test(val) ? fn(val) : () => {};
 const ifElse = (test, ifFn, elseFn) => (val) =>  test(val) ? ifFn(val) : elseFn(val);
 const $ = (el) => document.querySelector(el);

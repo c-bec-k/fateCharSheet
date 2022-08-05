@@ -22,25 +22,6 @@
   box-sizing: border-box;
 }
 
-/* :not(html,
-body,
-div,
-header,
-nav,
-main,
-footer,
-dl,
-ul,
-ol,
-img,
-section,
-strong,
-span) {
-  width: min(var(--measure), 100% - 2em);
-  margin-inline: auto;
-} */
-
-
 /****
   Basic Styles
 *****/
