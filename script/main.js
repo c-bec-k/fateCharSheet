@@ -81,7 +81,7 @@ const isRangeSlider = (ev) => ev.target.type === "range";
 const objectFrom = (val) => Object.fromEntries(val);
 const outputObjToDOM = (obj) => {
   const checkImg = (key) => key === "charImg";
-  const setImgSrc = (key) => $('[data-char="charImg"]').src = obj[key];
+  const setImgSrc = (key) => $('[data-char="charImg"]').src = obj[key] || './img/placeholder.png';
   const outputText = (key) => $(`[data-char="${key}"] > dd`).textContent = obj[key];
   Object.keys(obj).filter((key) => key !== "element").forEach(
     ifElse(checkImg, setImgSrc, outputText)
@@ -391,6 +391,8 @@ const toggleDialog = (ev) => {
   when((tgt) => tgt === 'vitals', () => fillInVitalsDialog(stateData))(target);
   $(`[data-popup=${target}]`).showModal();
 };
+
+$('[data-char="charImg"]').src = './img/placeholder.png';
 
 
 
