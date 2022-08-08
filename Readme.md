@@ -6,9 +6,10 @@ Hello and welcome! This repo is my attempt to make an online Fate RPG character 
 
 When I remember, I'll add items that I want to get done.
 
-- [X] Character ~~image upload or~~ URL
+- [X] Character URL
+- [X] Placeholder image
 - [X] Add everything to global state after modification
-- [ ] Read from global state *first* and populate the edit screens accordingly
+- [X] Read from global state *first* and populate the edit screens accordingly
   - [X] Description
   - [X] Aspects
   - [X] Skills
@@ -26,5 +27,6 @@ When I remember, I'll add items that I want to get done.
   - [ ] validation route
   - [ ] character list route
   - [ ] logout route
+  - [ ] character save route
 - [ ] Setup database
 - [ ] validate URL
