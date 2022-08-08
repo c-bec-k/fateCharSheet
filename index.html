@@ -178,7 +178,7 @@
       <h2>Vitals <button type="button" data-edit="vitals">✏️</button></h2>
       <h3>Stress</h3>
       <div class="stress measure" data-mod="stress">
-        <div><strong>Physical:</strong><span><button type="button">1</button><button type="button">1</button><button type="button">1</button><button type="button">1</button><button type="button">1</button><button type="button">1</button></span></div>
+        <div><strong>Physical:</strong><span><button type="button">1</button><button type="button">1</button><button type="button">1</button></span></div>
         <div><strong>Mental:</strong><span><button type="button">1</button><button type="button">1</button><button type="button">1</button></span></div>
       </div>
       <h3>Consequences</h3>
@@ -199,16 +199,16 @@
       <dialog data-popup="vitals" class="measure">
         <form class="flex-col">
           <div data-list="stress" class="grid two-by-two-grid">
-            <span><label for="physicalStress">Physical Stress Boxes </label><output for="physicalStress">(3)</output></span><input type="range" id="physicalStress" min="1" max="8" name="PhysicalStress" step="1" value="3">
-            <span><label for="mentalStress">Mental Stress Boxes </label><output for="mentalStress">(3)</output></span><input type="range" id="mentalStress" min="1" max="8" name="MentalStress" step="1" value="3">
+            <span><label for="physicalStress">Physical Stress Boxes </label><output for="physicalStress">(3)</output></span><input type="range" id="physicalStress" min="1" max="8" name="physicalStress" step="1" value="3">
+            <span><label for="mentalStress">Mental Stress Boxes </label><output for="mentalStress">(3)</output></span><input type="range" id="mentalStress" min="1" max="8" name="mentalStress" step="1" value="3">
           </div>
           <div class="flex-col">
             <label for="mildConsequence">Mild Consequence: </label>
-            <input name="MildConsequence" type="text" id="mildConsequence">
+            <input name="mildConsequence" type="text" id="mildConsequence">
             <label for="moderateConsequence">Moderate Consequence: </label>
-            <input name="ModerateConsequence" type="text" id="moderateConsequence">
+            <input name="moderateConsequence" type="text" id="moderateConsequence">
             <label for="severeConsequence">Severe Consequence: </label>
-            <input name="SevereConsequence" type="text" id="severeConsequence">
+            <input name="severeConsequence" type="text" id="severeConsequence">
           </div>
           <div>
             <!-- <button data-add="vitals" type="button">Add Stress Track</button> -->

@@ -6,7 +6,9 @@ const cond = (arr) => (data) => arr.find( ([fn, _]) => fn(data))[1](data);
 const pipe = (...fns) => (...init) => fns.slice(1).reduce( (val, fn) => fn(val), fns[0](...init));
 const arrayFrom = (val) => Array.from(val);
 const toObject = (iterable) => Object.fromEntries(iterable);
-const when = (test, fn) => (val) =>  test(val) ? fn(val) : () => {};
+
+const when = (test, fn) => (val) => test(val) ? fn(val) : val;
+
 const ifElse = (test, ifFn, elseFn) => (val) =>  test(val) ? ifFn(val) : elseFn(val);
 const $ = (el) => document.querySelector(el);
 const $$ = (el) => document.querySelectorAll(el);
@@ -16,6 +18,8 @@ const formatNumber = (num, el) => Number(num).toLocaleString(undefined,{signDisp
 const isString = (val) => typeof(val) === 'string';
 const isObject = (val) => typeof(val) === 'object';
 const tee = (fn) => (val) =>  (fn(val), val);
+
+const titleCase = (str) => `${str[0].toUpperCase()}${str.slice(1)}`;
 
 const updateState = (key) => (val) => {
   obj = Object.assign({}, state[key], val);
@@ -133,7 +137,9 @@ const formatSkills = (arr) => arr.map( ([key, val]) => [key.slice(3), val]);
 
 const updateSkillNumber = (ev) => {
   const el = ev.target.closest('form').querySelector('[name="element"]').value;
-  $(`output[for=${ev.target.id}]`).textContent = `(${formatNumber(ev.target.value, el)})`;
+  const outputEl = $(`output[for=${ev.target.id}]`);
+  const outputText = `(${formatNumber(ev.target.value, el)})`;
+  outputEl.textContent = outputText;
 };
 const updateSkill = when(isRangeSlider, updateSkillNumber)
 
@@ -304,7 +310,7 @@ const populateStressBoxes = (obj) => {
     if (key.includes('Stress')) {
       const el = createElement('div');
       const titleText = key.replace('Stress','');
-      const title = createElement('strong',{}, titleText);
+      const title = createElement('strong', titleCase(titleText));
       const span = createElement('span');
       span.innerHTML = '<button type="button">1</button>'.repeat(parseInt(obj[key]));
       el.append(title, span);
@@ -321,7 +327,7 @@ const fillConsequences = (obj) => {
     if (key.includes("Consequence")) {
       const dl = createElement('dl');
       const title = key.replace("Consequence", key.startsWith("Mild") ? " (-2)" : key.startsWith("Moderate") ? " (-4)" : " (-6)");
-      const dt = createElement('dt', title);
+      const dt = createElement('dt', titleCase(title));
       const dd = createElement('dd', obj[key]);  
       dl.append(dt,dd);
       container.append(dl);
@@ -340,24 +346,51 @@ const saveVitalsObject = pipe(
   closeDialog
 );
 
+const setStressNumbers = (obj) => {
+  Object.keys(obj).filter( (key) => key.includes("Stress")).forEach( (key) => {
+    $(`output[for="${key}"]`).textContent = `(${obj[key]})`;
+  });
+  return obj;
+};
+
+const setStressSliders = (obj) => {
+  Object.keys(obj).filter( (key) => key.includes("Stress")).forEach( (key) => {
+    $(`input[name="${key}"]`).value = `(${obj[key]})`;
+  });
+  return obj;
+};
+
+const setConsequences = (obj) => {
+  Object.keys(obj).filter( (key) => key.includes("Consequence")).forEach( (key) => {
+    $(`#${key}`).value = obj[key];
+  });
+  return obj;
+};
+
+const fillInVitalsDialog = pipe(
+  setStressNumbers,
+  setStressSliders,
+  setConsequences
+);
+
 
 /*****
   Init
 *****/
 
-  $('[data-char="charImg"]').style.maxHeight = `${$('.desc > div').offsetHeight}px`;
+$('[data-char="charImg"]').style.maxHeight = `${$('.desc > div').offsetHeight}px`;
 
-
-  const toggleDialog = (ev) => {
-    const target = ev.target.dataset.edit;
-    if (!target) return;
-    const stateData = state[target];
-    when(()=> target === 'skill', addSkillsToSkillList(stateData));
-    when(()=> target === 'desc', fillInDesDialog(stateData));
-    when(()=> target === 'aspects', fillInAspectDialog(stateData));
-    when(()=> target === 'stunts', fillInStuntsDialog(stateData));
-    $(`[data-popup=${target}]`).showModal();
-  };
+const toggleDialog = (ev) => {
+  const target = ev.target.dataset.edit;
+  if (!target) return;
+  const stateData = state[target];
+  when((tgt) => tgt === 'skills', () => addSkillsToSkillList(stateData))(target);
+  when((tgt) => tgt === 'desc', () => fillInDesDialog(stateData))(target);
+  when((tgt) => tgt === 'aspects', () => fillInAspectDialog(stateData))(target);
+  when((tgt) => tgt === 'stunts', () => fillInStuntsDialog(stateData))(target);
+  when((tgt) => tgt === 'vitals', () => fillInVitalsDialog(stateData))(target);
+  $(`[data-popup=${target}]`).showModal();
+};
 
 
 

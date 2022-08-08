@@ -13,8 +13,9 @@ When I remember, I'll add items that I want to get done.
   - [X] Aspects
   - [X] Skills
   - [X] Stunts
-  - [ ] Vitals
+  - [X] Vitals
 - [X] Add skills to list
+- [ ] Add dice rolling functionality
 - [ ] More functions! Less imperative
 - [X] Organize functions under better headers
 - [ ] Make state reactive to modify DOM
