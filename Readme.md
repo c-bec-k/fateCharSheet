@@ -30,3 +30,4 @@ When I remember, I'll add items that I want to get done.
   - [ ] character save route
 - [ ] Setup database
 - [ ] validate URL
+- [ ] Character settings tab

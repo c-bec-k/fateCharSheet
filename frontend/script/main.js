@@ -355,7 +355,7 @@ const setStressNumbers = (obj) => {
 
 const setStressSliders = (obj) => {
   Object.keys(obj).filter( (key) => key.includes("Stress")).forEach( (key) => {
-    $(`input[name="${key}"]`).value = `(${obj[key]})`;
+    $(`input[name="${key}"]`).value = obj[key];
   });
   return obj;
 };
