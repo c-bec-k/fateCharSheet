@@ -24,10 +24,11 @@ When I remember, I'll add items that I want to get done.
 - [ ] Character list page(?)
 - [ ] Clean up code
 - [ ] Make the backend
+  - [X] Serve static files
   - [ ] validation route
   - [ ] character list route
   - [ ] logout route
   - [ ] character save route
 - [ ] Setup database
-- [ ] validate URL
+- [X] validate URL
 - [ ] Character settings tab
